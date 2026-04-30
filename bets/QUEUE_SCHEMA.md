@@ -1,6 +1,6 @@
 # picks_to_sync.jsonl schema
 
-Each line is one JSON object representing a *final 1pm pick* (not previews).
+Each line is one JSON object representing a *final 1pm straight pick* (not previews). With 2-straights/day, you will append 2 lines per day (best + secondary).
 
 Required fields (minimum for insert):
 - pick_date (YYYY-MM-DD)
