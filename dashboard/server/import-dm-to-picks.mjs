@@ -42,6 +42,10 @@ function guessSport(league) {
 }
 
 function parseOdds(text) {
+  // Guard: ignore range strings like "+100..-200" or "+100 to -200"
+  if (/\+\s*100\s*(\.\.|to)\s*-\s*200/i.test(text)) return null;
+  if (/odds\s*(filter|range)/i.test(text) && /\+\s*100/i.test(text) && /-\s*200/i.test(text)) return null;
+
   const m = text.match(/\(([-+]?\d{3})\)/);
   if (m) return Number(m[1]);
   const m2 = text.match(/\bOdds\s*:?\s*([-+]?\d{3})\b/i);
@@ -153,6 +157,10 @@ function extractRowsFromContent(content) {
     const pick = mp.pick;
     const odds = mp.odds;
     const market = mp.market;
+
+    // Skip obvious non-picks (headers)
+    if (/\bpreview\b/i.test(pick)) continue;
+    if (/\bodds\s*(filter|range)\b/i.test(pick)) continue;
 
     const bet_type = parseBetType(market, pick);
     const line = parseLineFromPick(pick);
