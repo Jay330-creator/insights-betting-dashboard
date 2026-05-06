@@ -22,13 +22,13 @@ The dashboard shows real performance: cumulative units, win rate by league/sport
 ## Screenshots
 
 ### Overview — Real-time performance tracking
-![Overview](docs/overview.png)
+![Overview](overview.png)
 
 ### Costs — AI compute cost attribution per pick
-![Costs](docs/costs.png)
+![Costs](costs.png)
 
 ### Performance Analytics — Breakdowns by sport, bet type, confidence tier
-![Analytics](docs/analytics.png)
+![Analytics](analytics.png)
 
 ---
 
