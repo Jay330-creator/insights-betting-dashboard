@@ -1,0 +1,2 @@
+enrich: path=/Users/Sean/.openclaw/workspace/bets/picks_to_sync.jsonl total=8 enriched=0 already=8 skipped_no_date=0
+enrich: dates_seen={"2026-04-30":2,"2026-05-02":2,"2026-05-03":2,"2026-05-04":2}
