@@ -2,7 +2,7 @@
 
 An AI-powered sports betting agent with a full analytics dashboard. Picks are generated daily by an autonomous agent, posted to Discord, synced to a database, and graded automatically. Every pick is tracked with full cost attribution down to the dollar.
 
-**Live demo:** _coming soon_
+**Live demo:** (https://insights-betting-dashboard.vercel.app/)
 
 ---
 
