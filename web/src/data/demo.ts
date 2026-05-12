@@ -1,4 +1,4 @@
-import raw from './from_dm.json';
+const raw: { picks: any[] } = { picks: [] };
 import type { Pick, DailyCard } from './sample';
 
 // Convert extracted pick lines from DM export into normalized demo picks.
