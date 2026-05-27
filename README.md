@@ -123,7 +123,6 @@ A real incident log, because production systems break and how you handle it matt
 
 ## What's not included
 
-- Live link (deployment in progress; this README will update with the URL)
 - The OpenClaw agent prompts and cron config (these live on my Mac, separate from the dashboard repo)
 
 ---
