@@ -8,16 +8,16 @@ export function KpiCard(props: {
 }) {
   const toneCls =
     props.tone === 'good'
-      ? 'text-emerald-300'
+      ? 'text-accent'
       : props.tone === 'bad'
-        ? 'text-rose-300'
-        : 'text-gray-100';
+        ? 'text-loss'
+        : 'text-text';
 
   return (
-    <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
-      <div className="text-xs font-semibold text-gray-400">{props.label}</div>
-      <div className={`mt-2 text-3xl font-extrabold ${toneCls}`}>{props.value}</div>
-      {props.sub ? <div className="mt-2 text-xs text-gray-400">{props.sub}</div> : null}
+    <div className="rounded-md border border-border bg-card p-4">
+      <div className="text-xs font-semibold text-muted">{props.label}</div>
+      <div className={`mt-2 text-3xl font-extrabold tabular-nums ${toneCls}`}>{props.value}</div>
+      {props.sub ? <div className="mt-2 text-xs text-muted">{props.sub}</div> : null}
     </div>
   );
 }

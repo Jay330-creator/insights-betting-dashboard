@@ -5,14 +5,14 @@ import { usePicks } from '../lib/usePicks';
 
 function StatRow({ title, picksCount, record, wr, roiPct, units }: any) {
   return (
-    <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+    <div className="rounded-md border border-border bg-card p-4">
       <div className="text-sm font-semibold">{title}</div>
       <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-        <div className="text-gray-400">Picks</div><div className="text-right font-semibold">{picksCount}</div>
-        <div className="text-gray-400">Record</div><div className="text-right font-semibold">{record}</div>
-        <div className="text-gray-400">Win rate</div><div className="text-right font-semibold">{wr}</div>
-        <div className="text-gray-400">ROI</div><div className="text-right font-semibold">{roiPct}</div>
-        <div className="text-gray-400">Units</div><div className="text-right font-semibold">{units}</div>
+        <div className="text-muted">Picks</div><div className="text-right font-mono font-semibold tabular-nums">{picksCount}</div>
+        <div className="text-muted">Record</div><div className="text-right font-mono font-semibold tabular-nums">{record}</div>
+        <div className="text-muted">Win rate</div><div className="text-right font-mono font-semibold tabular-nums">{wr}</div>
+        <div className="text-muted">ROI</div><div className="text-right font-mono font-semibold tabular-nums">{roiPct}</div>
+        <div className="text-muted">Units</div><div className="text-right font-mono font-semibold tabular-nums">{units}</div>
       </div>
     </div>
   );
@@ -26,24 +26,24 @@ export default function Analytics() {
   const tier = useMemo(() => byConfidenceTier(picks), [picks]);
 
   if (loading) {
-    return <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">Loading...</div>;
+    return <div className="rounded-md border border-border bg-card p-5">Loading...</div>;
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">
+      <div className="rounded-md border border-border bg-card p-5">
         <div className="text-lg font-extrabold">Failed to load picks</div>
-        <div className="mt-2 text-sm text-gray-400">{error}</div>
-        <div className="mt-3 text-sm text-gray-400">Tip: add <span className="font-mono">?demo=1</span> to the URL to use demo data.</div>
+        <div className="mt-2 text-sm text-muted">{error}</div>
+        <div className="mt-3 text-sm text-muted">Tip: add <span className="font-mono">?demo=1</span> to the URL to use demo data.</div>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">
+      <div className="rounded-md border border-border bg-card p-5">
         <div className="text-3xl font-extrabold tracking-tight">Performance Analytics</div>
-        <div className="mt-1 text-sm text-gray-400">Breakdowns by league and bet type.</div>
+        <div className="mt-1 text-sm text-muted">Breakdowns by league and bet type.</div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">

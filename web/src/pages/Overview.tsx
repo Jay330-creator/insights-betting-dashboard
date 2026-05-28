@@ -134,24 +134,24 @@ export default function Overview() {
   }, [allPicks, costsByPickId]);
 
   if (loading) {
-    return <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">Loading...</div>;
+    return <div className="rounded-md border border-border bg-card p-5">Loading...</div>;
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">
+      <div className="rounded-md border border-border bg-card p-5">
         <div className="text-lg font-extrabold">Failed to load picks</div>
-        <div className="mt-2 text-sm text-gray-400">{error}</div>
-        <div className="mt-3 text-sm text-gray-400">Tip: add <span className="font-mono">?demo=1</span> to the URL to use demo data.</div>
+        <div className="mt-2 text-sm text-muted">{error}</div>
+        <div className="mt-3 text-sm text-muted">Tip: add <span className="font-mono">?demo=1</span> to the URL to use demo data.</div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">
+      <div className="rounded-md border border-border bg-card p-5">
         <div className="text-3xl font-extrabold tracking-tight">Overview</div>
-        <div className="mt-1 text-sm text-gray-400">High-level KPIs, MTD performance, and trend snapshots (sample data).</div>
+        <div className="mt-1 text-sm text-muted">High-level KPIs, MTD performance, and trend snapshots (sample data).</div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -162,16 +162,16 @@ export default function Overview() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+        <div className="rounded-md border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold">Cumulative Units (running total)</div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={cumulativeByDay} margin={{ left: 8, right: 8 }}>
-                <CartesianGrid stroke="rgba(255,255,255,.08)" />
-                <XAxis dataKey="dateLabel" stroke="rgba(255,255,255,.45)" />
-                <YAxis stroke="rgba(255,255,255,.45)" />
+                <CartesianGrid stroke="#262C34" />
+                <XAxis dataKey="dateLabel" stroke="#8B949E" />
+                <YAxis stroke="#8B949E" />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(17,24,39,.95)', border: '1px solid rgba(255,255,255,.08)' }}
+                  contentStyle={{ background: '#161A1F', border: '1px solid #262C34' }}
                   formatter={(v: any, name: any) => {
                     if (name === 'cumUnits') return [fmtUnits(Number(v)), 'Cumulative'];
                     if (name === 'unitsDay') return [fmtUnits(Number(v)), 'Day'];
@@ -182,32 +182,32 @@ export default function Overview() {
                     return full || label;
                   }}
                 />
-                <ReferenceLine y={0} stroke="rgba(255,255,255,.25)" strokeDasharray="4 4" />
+                <ReferenceLine y={0} stroke="#8B949E" strokeDasharray="4 4" />
 
-                <Area type="monotone" dataKey="cumPos" stroke="none" fill="rgba(34,197,94,.18)" dot={false} />
-                <Area type="monotone" dataKey="cumNeg" stroke="none" fill="rgba(239,68,68,.18)" dot={false} />
-                <Line type="monotone" dataKey="cumUnits" stroke="#38bdf8" strokeWidth={3} dot={false} />
+                <Area type="monotone" dataKey="cumPos" stroke="none" fill="rgba(0,210,106,.18)" dot={false} />
+                <Area type="monotone" dataKey="cumNeg" stroke="none" fill="rgba(255,71,87,.18)" dot={false} />
+                <Line type="monotone" dataKey="cumUnits" stroke="#00D26A" strokeWidth={3} dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+        <div className="rounded-md border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold">Recent Form</div>
           <div className="flex h-72 flex-col justify-between">
-            <div className="text-sm text-gray-400">Most recent {recentForm.length} picks</div>
+            <div className="text-sm text-muted">Most recent {recentForm.length} picks</div>
             <div className="flex flex-wrap items-center gap-2">
               {recentForm.map((p) => {
                 const r = p.result;
                 const base = 'h-3 w-3 rounded-sm';
                 const cls =
                   r === 'W'
-                    ? `${base} bg-emerald-400`
+                    ? `${base} bg-accent`
                     : r === 'L'
-                      ? `${base} bg-red-400`
+                      ? `${base} bg-loss`
                       : r === 'P'
-                        ? `${base} bg-gray-400`
-                        : `${base} border border-gray-500 bg-transparent`;
+                        ? `${base} bg-muted`
+                        : `${base} border border-border bg-transparent`;
 
                 return (
                   <div
@@ -220,27 +220,27 @@ export default function Overview() {
               })}
             </div>
 
-            <div className="text-xs text-gray-500">
-              Legend: <span className="text-emerald-400">W</span>, <span className="text-red-400">L</span>,{' '}
-              <span className="text-gray-300">P</span>, <span className="text-gray-400">PENDING</span>
+            <div className="text-xs text-muted">
+              Legend: <span className="font-bold text-accent">W</span>, <span className="font-bold text-loss">L</span>,{' '}
+              <span className="font-bold text-muted">P</span>, <span className="font-bold text-pending">PENDING</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+        <div className="rounded-md border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold">Profit by Sport</div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={profitBySport} layout="vertical" margin={{ left: 24, right: 8 }}>
-                <CartesianGrid stroke="rgba(255,255,255,.08)" />
-                <XAxis type="number" stroke="rgba(255,255,255,.45)" tickFormatter={(v) => fmtUnits(Number(v))} />
-                <YAxis type="category" dataKey="sport" stroke="rgba(255,255,255,.45)" width={90} />
-                <Tooltip contentStyle={{ background: 'rgba(17,24,39,.95)', border: '1px solid rgba(255,255,255,.08)' }} />
+                <CartesianGrid stroke="#262C34" />
+                <XAxis type="number" stroke="#8B949E" tickFormatter={(v) => fmtUnits(Number(v))} />
+                <YAxis type="category" dataKey="sport" stroke="#8B949E" width={90} />
+                <Tooltip contentStyle={{ background: '#161A1F', border: '1px solid #262C34' }} />
                 <Bar dataKey="units" name="Units" radius={[6, 6, 6, 6]}>
                   {profitBySport.map((row) => (
-                    <Cell key={row.sport} fill={row.units >= 0 ? '#22c55e' : '#ef4444'} />
+                    <Cell key={row.sport} fill={row.units >= 0 ? '#00D26A' : '#FF4757'} />
                   ))}
                 </Bar>
               </BarChart>
@@ -248,27 +248,27 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+        <div className="rounded-md border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold">Confidence vs Outcome</div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ left: 8, right: 8, top: 8, bottom: 8 }}>
-                <CartesianGrid stroke="rgba(255,255,255,.08)" />
+                <CartesianGrid stroke="#262C34" />
                 <XAxis
                   type="number"
                   dataKey="confidence"
                   domain={[0, 10]}
-                  stroke="rgba(255,255,255,.45)"
+                  stroke="#8B949E"
                   tickCount={6}
                 />
                 <YAxis
                   type="number"
                   dataKey="units"
-                  stroke="rgba(255,255,255,.45)"
+                  stroke="#8B949E"
                   tickFormatter={(v) => fmtUnits(Number(v))}
                 />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(17,24,39,.95)', border: '1px solid rgba(255,255,255,.08)' }}
+                  contentStyle={{ background: '#161A1F', border: '1px solid #262C34' }}
                   formatter={(v: any, name: any, ctx: any) => {
                     if (name === 'units') return [fmtUnits(Number(v)), 'Units'];
                     if (name === 'confidence') return [Number(v).toFixed(1), 'Confidence'];
@@ -280,42 +280,42 @@ export default function Overview() {
                     return `${p.date} • ${p.result}`;
                   }}
                 />
-                <ReferenceLine y={0} stroke="rgba(255,255,255,.25)" strokeDasharray="4 4" />
+                <ReferenceLine y={0} stroke="#8B949E" strokeDasharray="4 4" />
 
                 <Scatter data={confidenceVsOutcome} name="Picks">
                   {confidenceVsOutcome.map((d) => {
                     const r = d.result;
-                    const fill = r === 'W' ? '#22c55e' : r === 'L' ? '#ef4444' : r === 'P' ? '#94a3b8' : 'transparent';
-                    const stroke = r === 'PENDING' ? 'rgba(148,163,184,.8)' : 'transparent';
+                    const fill = r === 'W' ? '#00D26A' : r === 'L' ? '#FF4757' : r === 'P' ? '#8B949E' : 'transparent';
+                    const stroke = r === 'PENDING' ? '#FFB020' : 'transparent';
                     return <Cell key={d.id} fill={fill} stroke={stroke} strokeWidth={2} />;
                   })}
                 </Scatter>
               </ScatterChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-2 text-xs text-gray-500">Hover a point to see the pick.</div>
+          <div className="mt-2 text-xs text-muted">Hover a point to see the pick.</div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+        <div className="rounded-md border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold">Cost vs Profit</div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ left: 8, right: 8, top: 8, bottom: 8 }}>
-                <CartesianGrid stroke="rgba(255,255,255,.08)" />
+                <CartesianGrid stroke="#262C34" />
                 <XAxis
                   type="number"
                   dataKey="cost"
-                  stroke="rgba(255,255,255,.45)"
+                  stroke="#8B949E"
                   tickFormatter={(v) => `$${Number(v).toFixed(3)}`}
                 />
                 <YAxis
                   type="number"
                   dataKey="units"
-                  stroke="rgba(255,255,255,.45)"
+                  stroke="#8B949E"
                   tickFormatter={(v) => fmtUnits(Number(v))}
                 />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(17,24,39,.95)', border: '1px solid rgba(255,255,255,.08)' }}
+                  contentStyle={{ background: '#161A1F', border: '1px solid #262C34' }}
                   formatter={(v: any, name: any) => {
                     if (name === 'cost') return [`$${Number(v).toFixed(4)}`, 'Cost'];
                     if (name === 'units') return [fmtUnits(Number(v)), 'Units'];
@@ -327,20 +327,20 @@ export default function Overview() {
                     return `${p.date} • ${p.result} • ${p.label}`;
                   }}
                 />
-                <ReferenceLine y={0} stroke="rgba(255,255,255,.25)" strokeDasharray="4 4" />
+                <ReferenceLine y={0} stroke="#8B949E" strokeDasharray="4 4" />
 
                 <Scatter data={costVsProfit} name="Picks">
                   {costVsProfit.map((d) => {
                     const r = d.result;
-                    const fill = r === 'W' ? '#22c55e' : r === 'L' ? '#ef4444' : r === 'P' ? '#94a3b8' : 'transparent';
-                    const stroke = r === 'PENDING' ? 'rgba(148,163,184,.8)' : 'transparent';
+                    const fill = r === 'W' ? '#00D26A' : r === 'L' ? '#FF4757' : r === 'P' ? '#8B949E' : 'transparent';
+                    const stroke = r === 'PENDING' ? '#FFB020' : 'transparent';
                     return <Cell key={d.id} fill={fill} stroke={stroke} strokeWidth={2} />;
                   })}
                 </Scatter>
               </ScatterChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-2 text-xs text-gray-500">Does spending more compute correlate with better outcomes?</div>
+          <div className="mt-2 text-xs text-muted">Does spending more compute correlate with better outcomes?</div>
         </div>
       </div>
 

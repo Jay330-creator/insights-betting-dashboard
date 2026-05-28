@@ -7,16 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: "#0b1020",
-        panel: "rgba(17,24,39,.75)",
-        panel2: "rgba(31,41,55,.65)",
-        border: "rgba(255,255,255,.08)",
+        // Sportsbook dark theme
+        bg: "#0D1117",
+        card: "#161A1F",
+        border: "#262C34",
+        accent: "#00D26A",
+        loss: "#FF4757",
+        pending: "#FFB020",
+        text: "#F0F3F6",
+        muted: "#8B949E",
       },
-      boxShadow: {
-        glow: "0 18px 50px rgba(0,0,0,.22)",
-      }
     },
   },
   plugins: [],
 }
-

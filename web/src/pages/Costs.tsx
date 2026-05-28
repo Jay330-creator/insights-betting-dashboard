@@ -105,23 +105,23 @@ export default function Costs() {
   }, [rows]);
 
   if (loading) {
-    return <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">Loading...</div>;
+    return <div className="rounded-md border border-border bg-card p-5">Loading...</div>;
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">
+      <div className="rounded-md border border-border bg-card p-5">
         <div className="text-lg font-extrabold">Failed to load costs</div>
-        <div className="mt-2 text-sm text-gray-400">{error}</div>
+        <div className="mt-2 text-sm text-muted">{error}</div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-border bg-panel p-5 shadow-glow">
+      <div className="rounded-md border border-border bg-card p-5">
         <div className="text-3xl font-extrabold tracking-tight">Costs</div>
-        <div className="mt-1 text-sm text-gray-400">Compute spend and efficiency.</div>
+        <div className="mt-1 text-sm text-muted">Compute spend and efficiency.</div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -132,41 +132,41 @@ export default function Costs() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+        <div className="rounded-md border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold">Cost Over Time</div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={costOverTime} margin={{ left: 8, right: 8 }}>
-                <CartesianGrid stroke="rgba(255,255,255,.08)" />
-                <XAxis dataKey="dateLabel" stroke="rgba(255,255,255,.45)" />
-                <YAxis stroke="rgba(255,255,255,.45)" tickFormatter={(v) => fmtUsd(Number(v))} />
+                <CartesianGrid stroke="#262C34" />
+                <XAxis dataKey="dateLabel" stroke="#8B949E" />
+                <YAxis stroke="#8B949E" tickFormatter={(v) => fmtUsd(Number(v))} />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(17,24,39,.95)', border: '1px solid rgba(255,255,255,.08)' }}
+                  contentStyle={{ background: '#161A1F', border: '1px solid #262C34' }}
                   formatter={(v: any) => [fmtUsd(Number(v)), 'Cost']}
                   labelFormatter={(_, payload: any) => payload?.[0]?.payload?.date || ''}
                 />
-                <Line type="monotone" dataKey="costUsd" stroke="#ef4444" strokeWidth={3} dot={false} />
+                <Line type="monotone" dataKey="costUsd" stroke="#FF4757" strokeWidth={3} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+        <div className="rounded-md border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold">Most Expensive Picks</div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={mostExpensive} layout="vertical" margin={{ left: 16, right: 8 }}>
-                <CartesianGrid stroke="rgba(255,255,255,.08)" />
-                <XAxis type="number" stroke="rgba(255,255,255,.45)" tickFormatter={(v) => fmtUsd(Number(v))} />
-                <YAxis type="category" dataKey="label" stroke="rgba(255,255,255,.45)" width={140} />
+                <CartesianGrid stroke="#262C34" />
+                <XAxis type="number" stroke="#8B949E" tickFormatter={(v) => fmtUsd(Number(v))} />
+                <YAxis type="category" dataKey="label" stroke="#8B949E" width={140} />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(17,24,39,.95)', border: '1px solid rgba(255,255,255,.08)' }}
+                  contentStyle={{ background: '#161A1F', border: '1px solid #262C34' }}
                   formatter={(v: any) => [fmtUsd(Number(v)), 'Cost']}
                 />
                 <Bar dataKey="costUsd" name="Cost" radius={[6, 6, 6, 6]}>
                   {mostExpensive.map((r) => {
-                    const fill = r.result === 'W' ? '#22c55e' : r.result === 'L' ? '#ef4444' : r.result === 'P' ? '#94a3b8' : 'transparent';
-                    const stroke = r.result === 'PENDING' ? 'rgba(148,163,184,.8)' : 'transparent';
+                    const fill = r.result === 'W' ? '#00D26A' : r.result === 'L' ? '#FF4757' : r.result === 'P' ? '#8B949E' : 'transparent';
+                    const stroke = r.result === 'PENDING' ? '#FFB020' : 'transparent';
                     return <Cell key={r.id} fill={fill} stroke={stroke} strokeWidth={2} />;
                   })}
                 </Bar>
@@ -176,17 +176,17 @@ export default function Costs() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-panel p-4 shadow-glow">
+      <div className="rounded-md border border-border bg-card p-4">
         <div className="mb-3 text-sm font-semibold">Cost vs Profit by Day</div>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={costVsProfitByDay} margin={{ left: 8, right: 8 }}>
-              <CartesianGrid stroke="rgba(255,255,255,.08)" />
-              <XAxis dataKey="dateLabel" stroke="rgba(255,255,255,.45)" />
-              <YAxis yAxisId="cost" stroke="rgba(255,255,255,.45)" tickFormatter={(v) => fmtUsd(Number(v))} />
-              <YAxis yAxisId="profit" orientation="right" stroke="rgba(255,255,255,.45)" tickFormatter={(v) => fmtUnits(Number(v))} />
+              <CartesianGrid stroke="#262C34" />
+              <XAxis dataKey="dateLabel" stroke="#8B949E" />
+              <YAxis yAxisId="cost" stroke="#8B949E" tickFormatter={(v) => fmtUsd(Number(v))} />
+              <YAxis yAxisId="profit" orientation="right" stroke="#8B949E" tickFormatter={(v) => fmtUnits(Number(v))} />
               <Tooltip
-                contentStyle={{ background: 'rgba(17,24,39,.95)', border: '1px solid rgba(255,255,255,.08)' }}
+                contentStyle={{ background: '#161A1F', border: '1px solid #262C34' }}
                 formatter={(v: any, name: any) => {
                   if (name === 'costUsd') return [fmtUsd(Number(v)), 'Cost'];
                   if (name === 'profitUnits') return [fmtUnits(Number(v)), 'Profit'];
@@ -195,9 +195,9 @@ export default function Costs() {
                 labelFormatter={(_, payload: any) => payload?.[0]?.payload?.date || ''}
               />
               <Legend />
-              <ReferenceLine yAxisId="profit" y={0} stroke="rgba(255,255,255,.25)" strokeDasharray="4 4" />
-              <Bar yAxisId="cost" dataKey="costUsd" fill="#ef4444" name="Daily cost" />
-              <Line yAxisId="profit" type="monotone" dataKey="profitUnits" stroke="#22c55e" strokeWidth={3} dot={false} name="Daily profit" />
+              <ReferenceLine yAxisId="profit" y={0} stroke="#8B949E" strokeDasharray="4 4" />
+              <Bar yAxisId="cost" dataKey="costUsd" fill="#FF4757" name="Daily cost" />
+              <Line yAxisId="profit" type="monotone" dataKey="profitUnits" stroke="#00D26A" strokeWidth={3} dot={false} name="Daily profit" />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
