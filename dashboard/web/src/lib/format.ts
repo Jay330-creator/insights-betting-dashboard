@@ -12,7 +12,7 @@ export function fmtUnits(x: number) {
 }
 
 export function confidenceLabel(c: number) {
-  if (c >= 7.5) return { label: 'Strong', cls: 'bg-emerald-500/15 text-emerald-200 border-emerald-500/30' };
-  if (c >= 7.0) return { label: 'Lean', cls: 'bg-sky-500/15 text-sky-200 border-sky-500/30' };
-  return { label: 'Low', cls: 'bg-amber-500/15 text-amber-200 border-amber-500/30' };
+  if (c >= 7.5) return { label: 'Strong', cls: 'border-accent text-accent' };
+  if (c >= 7.0) return { label: 'Lean', cls: 'border-border text-text' };
+  return { label: 'Low', cls: 'border-pending text-pending' };
 }
