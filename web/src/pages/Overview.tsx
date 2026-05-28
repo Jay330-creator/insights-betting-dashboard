@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { KpiCard } from '../components/KpiCard';
 import { summarize, winRate, roi, calcUnitsNet } from '../lib/metrics';
 import { fmtPct, fmtUnits } from '../lib/format';
@@ -25,9 +25,107 @@ export default function Overview() {
   const { picks: allPicks, loading, error } = usePicks();
   const { costsByPickId } = usePickCosts();
 
+  const [fetchedAt, setFetchedAt] = useState<Date | null>(null);
+  useEffect(() => {
+    if (!loading && !error) setFetchedAt(new Date());
+  }, [loading, error, allPicks.length]);
+
+  function fmtEtDateTime(d: Date) {
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(d);
+  }
+
+  function fmtEtDate(yyyyMmDd: string) {
+    const m = /^\d{4}-\d{2}-\d{2}$/.test(yyyyMmDd) ? yyyyMmDd : '';
+    if (!m) return yyyyMmDd;
+    const d = new Date(`${m}T00:00:00Z`);
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    }).format(d);
+  }
+
   const totals = useMemo(() => summarize(allPicks), [allPicks]);
   const wr = useMemo(() => winRate(totals), [totals]);
   const r = useMemo(() => roi(totals, allPicks), [totals, allPicks]);
+
+  const trackingSince = useMemo(() => {
+    const dates = allPicks.map((p) => p.date).filter(Boolean);
+    if (!dates.length) return null;
+    return dates.slice().sort()[0];
+  }, [allPicks]);
+
+  const sportsCount = useMemo(() => {
+    const leagueToSport: Record<string, string> = {
+      NBA: 'Basketball',
+      WNBA: 'Basketball',
+      NCAAB: 'Basketball',
+      MLB: 'Baseball',
+      NHL: 'Hockey',
+      NFL: 'Football',
+    };
+    const sports = new Set<string>();
+    for (const p of allPicks) {
+      const league = String((p as any).league || '').trim();
+      const sport = leagueToSport[league] || league || 'Unknown';
+      if (sport) sports.add(sport);
+    }
+    return sports.size;
+  }, [allPicks]);
+
+  const last10 = useMemo(() => {
+    const sorted = [...allPicks]
+      .filter((p) => Boolean(p.date))
+      .sort((a, b) => {
+        const da = a.date || '';
+        const db = b.date || '';
+        if (da !== db) return da < db ? -1 : 1;
+        const ta = a.oddsAtPick?.ts || '';
+        const tb = b.oddsAtPick?.ts || '';
+        return ta < tb ? -1 : ta > tb ? 1 : 0;
+      });
+
+    const recent = sorted.filter((p) => p.result !== 'PENDING').slice(-10);
+    const w = recent.filter((p) => p.result === 'W').length;
+    const l = recent.filter((p) => p.result === 'L').length;
+    const p = recent.filter((p) => p.result === 'P').length;
+    return { w, l, p };
+  }, [allPicks]);
+
+  const streak = useMemo(() => {
+    const sorted = [...allPicks]
+      .filter((p) => Boolean(p.date))
+      .sort((a, b) => {
+        const da = a.date || '';
+        const db = b.date || '';
+        if (da !== db) return da < db ? -1 : 1;
+        const ta = a.oddsAtPick?.ts || '';
+        const tb = b.oddsAtPick?.ts || '';
+        return ta < tb ? -1 : ta > tb ? 1 : 0;
+      });
+
+    const recent = sorted.filter((p) => p.result !== 'PENDING');
+    if (!recent.length) return { label: '—', tone: 'neutral' as const };
+
+    const last = recent[recent.length - 1].result;
+    if (last !== 'W' && last !== 'L') return { label: '—', tone: 'neutral' as const };
+
+    let n = 0;
+    for (let i = recent.length - 1; i >= 0; i--) {
+      if (recent[i].result === last) n++;
+      else break;
+    }
+
+    return { label: `${last}${n}`, tone: last === 'W' ? ('good' as const) : ('bad' as const) };
+  }, [allPicks]);
 
   const cumulativeByDay = useMemo(() => {
     // group by pick.date (YYYY-MM-DD)
@@ -149,17 +247,35 @@ export default function Overview() {
 
   return (
     <div className="space-y-6">
+      <div className="text-xs text-muted opacity-80">
+        Last updated: {fetchedAt ? fmtEtDateTime(fetchedAt) : '—'}
+        <span className="px-2">·</span>
+        {allPicks.length} picks tracked
+        <span className="px-2">·</span>
+        {sportsCount} sports
+        <span className="px-2">·</span>
+        tracking since {trackingSince ? fmtEtDate(trackingSince) : '—'}
+      </div>
+
       <div className="rounded-md border border-border bg-card p-5">
         <div className="text-3xl font-extrabold tracking-tight">Overview</div>
         <div className="mt-1 text-sm text-muted">High-level KPIs, MTD performance, and trend snapshots (sample data).</div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-5">
         <KpiCard label="Record" value={`${totals.wins}-${totals.losses}-${totals.pushes}`} sub={`${totals.pending} pending`} />
         <KpiCard label="Win Rate" value={fmtPct(wr)} />
         <KpiCard label="ROI" value={fmtPct(r)} tone={r >= 0 ? 'good' : 'bad'} />
         <KpiCard label="Units Net" value={fmtUnits(totals.unitsNet)} tone={totals.unitsNet >= 0 ? 'good' : 'bad'} />
+        <KpiCard
+          label="Recent Streak"
+          value={`Last 10: ${last10.w}-${last10.l}`}
+          sub={`Streak: ${streak.label}${last10.p ? ` • ${last10.p} push` : ''}`}
+          tone={streak.tone}
+        />
       </div>
+
+      <div className="text-xs font-semibold uppercase tracking-widest text-muted opacity-80">Performance</div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-md border border-border bg-card p-4">
@@ -228,10 +344,12 @@ export default function Overview() {
         </div>
       </div>
 
+      <div className="text-xs font-semibold uppercase tracking-widest text-muted opacity-80">Breakdowns</div>
+
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <div className="rounded-md border border-border bg-card p-4">
+        <div className="rounded-md border border-border bg-card p-4 flex flex-col min-h-[360px]">
           <div className="mb-3 text-sm font-semibold">Profit by Sport</div>
-          <div className="h-64">
+          <div className="h-64 flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={profitBySport} layout="vertical" margin={{ left: 24, right: 8 }}>
                 <CartesianGrid stroke="#262C34" />
@@ -248,9 +366,9 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="rounded-md border border-border bg-card p-4">
+        <div className="rounded-md border border-border bg-card p-4 flex flex-col min-h-[360px]">
           <div className="mb-3 text-sm font-semibold">Confidence vs Outcome</div>
-          <div className="h-64">
+          <div className="h-64 flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ left: 8, right: 8, top: 8, bottom: 8 }}>
                 <CartesianGrid stroke="#262C34" />
@@ -296,9 +414,9 @@ export default function Overview() {
           <div className="mt-2 text-xs text-muted">Hover a point to see the pick.</div>
         </div>
 
-        <div className="rounded-md border border-border bg-card p-4">
+        <div className="rounded-md border border-border bg-card p-4 flex flex-col min-h-[360px]">
           <div className="mb-3 text-sm font-semibold">Cost vs Profit</div>
-          <div className="h-64">
+          <div className="h-64 flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ left: 8, right: 8, top: 8, bottom: 8 }}>
                 <CartesianGrid stroke="#262C34" />
@@ -342,6 +460,11 @@ export default function Overview() {
           </div>
           <div className="mt-2 text-xs text-muted">Does spending more compute correlate with better outcomes?</div>
         </div>
+      </div>
+
+      <div className="rounded-md border border-border bg-card p-4 text-sm text-muted leading-relaxed">
+        Picks are generated daily by an AI agent, posted to Discord, auto-graded against official league APIs (MLB/NBA/NHL), and tracked here in real time.
+        ROI on compute = units of profit per dollar of AI spend.
       </div>
 
     </div>
