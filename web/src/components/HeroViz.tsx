@@ -58,29 +58,26 @@ export function HeroViz() {
               </div>
             </div>
 
-            {/* Accent: donut */}
-            <div className="hero-viz__layer hero-viz__layer--donut">
-              <svg viewBox="0 0 120 120" className="viz-donut__svg" role="presentation">
-                <defs>
-                  <linearGradient id="donutGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#00D26A" />
-                    <stop offset="55%" stopColor="#22E6C8" />
-                    <stop offset="100%" stopColor="#76F7A5" />
-                  </linearGradient>
-                </defs>
-
-                <g className="viz-donut__spin" transform="translate(60 60)">
-                  <circle className="viz-donut__track" r="36" cx="0" cy="0" />
-                  <circle className="viz-donut__arc" r="36" cx="0" cy="0" stroke="url(#donutGrad)" />
-                  <circle
-                    className="viz-donut__arc viz-donut__arc--thin"
-                    r="24"
-                    cx="0"
-                    cy="0"
-                    stroke="rgba(0, 210, 106, 0.55)"
+            {/* Accent: stacked sparklines */}
+            <div className="hero-viz__layer hero-viz__layer--spark">
+              <div className="viz-sparks" role="presentation">
+                <div className="viz-sparks__label">Trends</div>
+                <svg viewBox="0 0 180 96" className="viz-sparks__svg" preserveAspectRatio="none" role="presentation">
+                  <path className="viz-sparks__grid" d="M0 32 H180 M0 64 H180" />
+                  <path
+                    className="viz-spark viz-spark--a"
+                    d="M0 72 C20 38, 40 88, 60 58 C80 28, 100 78, 120 44 C140 18, 160 66, 180 34"
                   />
-                </g>
-              </svg>
+                  <path
+                    className="viz-spark viz-spark--b"
+                    d="M0 60 C22 46, 44 78, 66 52 C88 26, 110 64, 132 40 C154 18, 170 54, 180 44"
+                  />
+                  <path
+                    className="viz-spark viz-spark--c"
+                    d="M0 80 C22 70, 44 90, 66 74 C88 56, 110 86, 132 64 C154 44, 170 82, 180 66"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
