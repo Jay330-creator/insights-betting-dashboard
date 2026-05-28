@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { KpiCard } from '../components/KpiCard';
 import { summarize, winRate, roi, calcUnitsNet } from '../lib/metrics';
-import { fmtPct, fmtUnits } from '../lib/format';
+import { fmtUnits } from '../lib/format';
+import { useCountUp } from '../lib/useCountUp';
+import { usePrefersReducedMotion } from '../lib/usePrefersReducedMotion';
 import {
   ResponsiveContainer,
   Line,
@@ -25,10 +27,9 @@ export default function Overview() {
   const { picks: allPicks, loading, error } = usePicks();
   const { costsByPickId } = usePickCosts();
 
-  const [fetchedAt, setFetchedAt] = useState<Date | null>(null);
-  useEffect(() => {
-    if (!loading && !error) setFetchedAt(new Date());
-  }, [loading, error, allPicks.length]);
+  const reducedMotion = usePrefersReducedMotion();
+
+  const fetchedAt = useMemo(() => (!loading && !error ? new Date() : null), [loading, error]);
 
   function fmtEtDateTime(d: Date) {
     return new Intl.DateTimeFormat('en-US', {
@@ -56,6 +57,8 @@ export default function Overview() {
   const totals = useMemo(() => summarize(allPicks), [allPicks]);
   const wr = useMemo(() => winRate(totals), [totals]);
   const r = useMemo(() => roi(totals, allPicks), [totals, allPicks]);
+
+  const canAnimate = Boolean(!reducedMotion && fetchedAt);
 
   const trackingSince = useMemo(() => {
     const dates = allPicks.map((p) => p.date).filter(Boolean);
@@ -126,6 +129,21 @@ export default function Overview() {
 
     return { label: `${last}${n}`, tone: last === 'W' ? ('good' as const) : ('bad' as const) };
   }, [allPicks]);
+
+  // KPI count-ups (play once on load)
+  const aWins = useCountUp(totals.wins, { active: canAnimate, durationMs: 1200, decimals: 0 });
+  const aLosses = useCountUp(totals.losses, { active: canAnimate, durationMs: 1200, decimals: 0 });
+  const aPushes = useCountUp(totals.pushes, { active: canAnimate, durationMs: 1200, decimals: 0 });
+  const aPending = useCountUp(totals.pending, { active: canAnimate, durationMs: 1200, decimals: 0 });
+  const aWinRatePct = useCountUp(wr * 100, { active: canAnimate, durationMs: 1200, decimals: 1 });
+  const aRoiPct = useCountUp(r * 100, { active: canAnimate, durationMs: 1200, decimals: 1 });
+  const aUnitsNet = useCountUp(totals.unitsNet, { active: canAnimate, durationMs: 1200, decimals: 2 });
+  const aLast10W = useCountUp(last10.w, { active: canAnimate, durationMs: 1200, decimals: 0 });
+  const aLast10L = useCountUp(last10.l, { active: canAnimate, durationMs: 1200, decimals: 0 });
+
+  const streakSide = streak.label === '—' ? '' : String(streak.label).slice(0, 1);
+  const streakN = streak.label === '—' ? 0 : Number(String(streak.label).slice(1)) || 0;
+  const aStreakN = useCountUp(streakN, { active: canAnimate, durationMs: 1200, decimals: 0 });
 
   const cumulativeByDay = useMemo(() => {
     // group by pick.date (YYYY-MM-DD)
@@ -247,32 +265,45 @@ export default function Overview() {
 
   return (
     <div className="space-y-6">
-      <div className="text-xs text-muted opacity-80">
-        Last updated: {fetchedAt ? fmtEtDateTime(fetchedAt) : '—'}
-        <span className="px-2">·</span>
-        {allPicks.length} picks tracked
-        <span className="px-2">·</span>
-        {sportsCount} sports
-        <span className="px-2">·</span>
-        tracking since {trackingSince ? fmtEtDate(trackingSince) : '—'}
-      </div>
+      <div className="relative overflow-hidden rounded-md border border-border bg-card p-5">
+        <div className="hero-glow" aria-hidden="true" />
+        <div className="relative space-y-4">
+          <div className="text-xs text-muted opacity-80">
+            Last updated: {fetchedAt ? fmtEtDateTime(fetchedAt) : '—'}
+            <span className="px-2">·</span>
+            {allPicks.length} picks tracked
+            <span className="px-2">·</span>
+            {sportsCount} sports
+            <span className="px-2">·</span>
+            tracking since {trackingSince ? fmtEtDate(trackingSince) : '—'}
+          </div>
 
-      <div className="rounded-md border border-border bg-card p-5">
-        <div className="text-3xl font-extrabold tracking-tight">Overview</div>
-        <div className="mt-1 text-sm text-muted">High-level KPIs, MTD performance, and trend snapshots (sample data).</div>
-      </div>
+          <div>
+            <div className="text-3xl font-extrabold tracking-tight">Overview</div>
+            <div className="mt-1 text-sm text-muted">High-level KPIs, MTD performance, and trend snapshots (sample data).</div>
+          </div>
 
-      <div className="grid gap-4 md:grid-cols-5">
-        <KpiCard label="Record" value={`${totals.wins}-${totals.losses}-${totals.pushes}`} sub={`${totals.pending} pending`} />
-        <KpiCard label="Win Rate" value={fmtPct(wr)} />
-        <KpiCard label="ROI" value={fmtPct(r)} tone={r >= 0 ? 'good' : 'bad'} />
-        <KpiCard label="Units Net" value={fmtUnits(totals.unitsNet)} tone={totals.unitsNet >= 0 ? 'good' : 'bad'} />
-        <KpiCard
-          label="Recent Streak"
-          value={`Last 10: ${last10.w}-${last10.l}`}
-          sub={`Streak: ${streak.label}${last10.p ? ` • ${last10.p} push` : ''}`}
-          tone={streak.tone}
-        />
+          <div className="grid gap-4 md:grid-cols-5">
+            <KpiCard
+              label="Record"
+              value={`${Math.round(aWins)}-${Math.round(aLosses)}-${Math.round(aPushes)}`}
+              sub={`${Math.round(aPending)} pending`}
+            />
+            <KpiCard label="Win Rate" value={`${aWinRatePct.toFixed(1)}%`} />
+            <KpiCard label="ROI" value={`${aRoiPct.toFixed(1)}%`} tone={r >= 0 ? 'good' : 'bad'} />
+            <KpiCard
+              label="Units Net"
+              value={`${aUnitsNet >= 0 ? '+' : ''}${aUnitsNet.toFixed(2)}u`}
+              tone={totals.unitsNet >= 0 ? 'good' : 'bad'}
+            />
+            <KpiCard
+              label="Recent Streak"
+              value={`Last 10: ${Math.round(aLast10W)}-${Math.round(aLast10L)}`}
+              sub={`Streak: ${streak.label === '—' ? '—' : `${streakSide}${Math.max(0, Math.round(aStreakN))}`}${last10.p ? ` • ${last10.p} push` : ''}`}
+              tone={streak.tone}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="text-xs font-semibold uppercase tracking-widest text-muted opacity-80">Performance</div>
@@ -302,7 +333,17 @@ export default function Overview() {
 
                 <Area type="monotone" dataKey="cumPos" stroke="none" fill="rgba(0,210,106,.18)" dot={false} />
                 <Area type="monotone" dataKey="cumNeg" stroke="none" fill="rgba(255,71,87,.18)" dot={false} />
-                <Line type="monotone" dataKey="cumUnits" stroke="#00D26A" strokeWidth={3} dot={false} />
+                <Line
+                  type="monotone"
+                  dataKey="cumUnits"
+                  stroke="#00D26A"
+                  strokeWidth={3}
+                  dot={false}
+                  isAnimationActive={!reducedMotion}
+                  animationBegin={300}
+                  animationDuration={1500}
+                  animationEasing="ease-out"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
