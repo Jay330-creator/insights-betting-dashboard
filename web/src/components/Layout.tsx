@@ -1,6 +1,7 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 
 import { BottomWave } from './BottomWave';
+import { HeroViz } from './HeroViz';
 
 const nav = [
   { to: '/', label: 'Overview' },
@@ -11,6 +12,9 @@ const nav = [
 ];
 
 export function Layout() {
+  const { pathname } = useLocation();
+  const showHeroViz = pathname === '/';
+
   return (
     <div className="relative min-h-screen text-text">
       <div className="site-bg" aria-hidden="true" />
@@ -44,6 +48,14 @@ export function Layout() {
             </div>
           </nav>
         </header>
+
+        {showHeroViz && (
+          <section className="hero-viz-band" aria-hidden="true">
+            <div className="mx-auto w-full max-w-6xl px-6 pt-6">
+              <HeroViz />
+            </div>
+          </section>
+        )}
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-6">
           <Outlet />

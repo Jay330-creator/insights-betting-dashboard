@@ -208,3 +208,330 @@ body {
     transform: translate3d(0, 0, 0);
   }
 }
+
+/* --- Decorative hero viz panel --- */
+
+.hero-viz-band {
+  position: relative;
+}
+
+.hero-viz {
+  position: relative;
+  border: 1px solid rgba(38, 44, 52, 0.9);
+  background: linear-gradient(180deg, rgba(22, 26, 31, 0.92), rgba(13, 17, 23, 0.78));
+  border-radius: 14px;
+  padding: 18px 18px 16px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(0, 210, 106, 0.08) inset,
+    0 28px 70px rgba(0, 0, 0, 0.55);
+}
+
+.hero-viz::before {
+  content: '';
+  position: absolute;
+  inset: -60px;
+  background:
+    radial-gradient(700px 240px at 20% 15%, rgba(0, 210, 106, 0.26), transparent 65%),
+    radial-gradient(520px 240px at 80% 35%, rgba(34, 230, 200, 0.16), transparent 62%),
+    radial-gradient(600px 280px at 55% 115%, rgba(0, 210, 106, 0.12), transparent 60%);
+  filter: blur(16px);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.hero-viz__hdr {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.hero-viz__title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: 16px;
+  color: rgba(240, 243, 246, 0.92);
+}
+
+.hero-viz__sub {
+  font-size: 12px;
+  color: rgba(139, 148, 158, 0.95);
+}
+
+.hero-viz__grid {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1.2fr 0.9fr 1.4fr;
+}
+
+@media (max-width: 900px) {
+  .hero-viz__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.viz-card {
+  position: relative;
+  border: 1px solid rgba(38, 44, 52, 0.9);
+  background: rgba(13, 17, 23, 0.42);
+  border-radius: 12px;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.viz-card__label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(139, 148, 158, 0.92);
+  margin-bottom: 10px;
+}
+
+/* Bars */
+
+@keyframes vizBarIn {
+  0% {
+    transform: translate3d(0, 18px, 0) scaleY(0.02);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes vizBarBreathe {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(0, -3px, 0) scaleY(1.06);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+}
+
+.viz-bars {
+  height: 128px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 6px 2px 2px;
+  perspective: 900px;
+}
+
+.viz-bar {
+  position: relative;
+  width: 18px;
+  height: var(--h);
+  min-height: 10px;
+  border-radius: 6px;
+  transform-origin: bottom;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 0 12px rgba(0, 210, 106, 0.35));
+  animation:
+    vizBarIn 900ms cubic-bezier(0.18, 0.9, 0.2, 1) both,
+    vizBarBreathe 2.4s ease-in-out infinite;
+  animation-delay: var(--d), calc(1200ms + var(--d));
+}
+
+.viz-bar::before,
+.viz-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+/* Side face */
+.viz-bar::before {
+  width: 10px;
+  right: -8px;
+  left: auto;
+  transform: skewY(-26deg);
+  transform-origin: left bottom;
+  opacity: 0.85;
+  filter: brightness(0.9);
+}
+
+/* Top face */
+.viz-bar::after {
+  height: 10px;
+  top: -7px;
+  bottom: auto;
+  transform: skewX(-40deg);
+  transform-origin: left bottom;
+  opacity: 0.9;
+}
+
+.viz-bar--green {
+  background: linear-gradient(180deg, rgba(0, 210, 106, 0.98), rgba(0, 210, 106, 0.55));
+}
+.viz-bar--green::before {
+  background: linear-gradient(180deg, rgba(0, 160, 84, 0.95), rgba(0, 160, 84, 0.55));
+}
+.viz-bar--green::after {
+  background: linear-gradient(90deg, rgba(118, 247, 165, 0.85), rgba(0, 210, 106, 0.75));
+}
+
+.viz-bar--teal {
+  background: linear-gradient(180deg, rgba(34, 230, 200, 0.92), rgba(0, 210, 106, 0.45));
+  filter: drop-shadow(0 0 12px rgba(34, 230, 200, 0.28));
+}
+.viz-bar--teal::before {
+  background: linear-gradient(180deg, rgba(18, 170, 150, 0.9), rgba(18, 170, 150, 0.5));
+}
+.viz-bar--teal::after {
+  background: linear-gradient(90deg, rgba(170, 255, 245, 0.7), rgba(34, 230, 200, 0.65));
+}
+
+.viz-bar--mint {
+  background: linear-gradient(180deg, rgba(118, 247, 165, 0.92), rgba(0, 210, 106, 0.35));
+  filter: drop-shadow(0 0 12px rgba(118, 247, 165, 0.22));
+}
+.viz-bar--mint::before {
+  background: linear-gradient(180deg, rgba(64, 200, 125, 0.88), rgba(64, 200, 125, 0.46));
+}
+.viz-bar--mint::after {
+  background: linear-gradient(90deg, rgba(210, 255, 230, 0.65), rgba(118, 247, 165, 0.6));
+}
+
+/* Donut */
+
+@keyframes vizDonutDraw {
+  from {
+    stroke-dashoffset: 226;
+    opacity: 0.25;
+  }
+  to {
+    stroke-dashoffset: 56;
+    opacity: 1;
+  }
+}
+
+@keyframes vizDonutSpin {
+  from {
+    transform: rotate(-14deg);
+  }
+  to {
+    transform: rotate(346deg);
+  }
+}
+
+.viz-donut {
+  height: 128px;
+  display: grid;
+  place-items: center;
+}
+
+.viz-donut__svg {
+  width: 128px;
+  height: 128px;
+  overflow: visible;
+}
+
+.viz-donut__track {
+  fill: none;
+  stroke: rgba(38, 44, 52, 0.95);
+  stroke-width: 10;
+}
+
+.viz-donut__arc {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 0 0;
+  stroke-dasharray: 226;
+  stroke-dashoffset: 226;
+  filter: drop-shadow(0 0 14px rgba(0, 210, 106, 0.35));
+  animation: vizDonutDraw 950ms ease-out both;
+}
+
+.viz-donut__arc--thin {
+  stroke-width: 6;
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  opacity: 0.8;
+  animation-duration: 1050ms;
+}
+
+.viz-donut__spin {
+  animation: vizDonutSpin 10s linear infinite;
+  animation-delay: 1100ms;
+}
+
+/* Line */
+
+@keyframes vizLineDraw {
+  0% {
+    stroke-dashoffset: 820;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+.viz-line {
+  height: 128px;
+}
+
+.viz-line__svg {
+  width: 100%;
+  height: 100%;
+}
+
+.viz-line__grid {
+  fill: none;
+  stroke: rgba(38, 44, 52, 0.75);
+  stroke-width: 1;
+}
+
+.viz-line__path {
+  fill: none;
+  stroke: #00D26A;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 14px rgba(0, 210, 106, 0.38));
+  stroke-dasharray: 820;
+  stroke-dashoffset: 820;
+  animation: vizLineDraw 7s linear infinite;
+}
+
+.viz-line__path--ghost {
+  stroke: rgba(34, 230, 200, 0.35);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 10px rgba(34, 230, 200, 0.22));
+  animation-duration: 8.5s;
+  animation-delay: 0.4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viz-bar,
+  .viz-donut__arc,
+  .viz-donut__spin,
+  .viz-line__path {
+    animation: none !important;
+  }
+  .viz-donut__arc,
+  .viz-donut__arc--thin,
+  .viz-line__path {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
