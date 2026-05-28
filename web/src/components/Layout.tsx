@@ -1,5 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 
+import { BottomWave } from './BottomWave';
+
 const nav = [
   { to: '/', label: 'Overview' },
   { to: '/history', label: 'Pick History' },
@@ -13,7 +15,7 @@ export function Layout() {
     <div className="relative min-h-screen text-text">
       <div className="site-bg" aria-hidden="true" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 flex min-h-screen flex-col">
         <header className="sticky top-0 z-10 border-b border-border bg-bg">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <div>
@@ -43,13 +45,16 @@ export function Layout() {
           </nav>
         </header>
 
-        <main className="mx-auto max-w-6xl px-6 py-6">
+        <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-6">
           <Outlet />
         </main>
 
-        <footer className="mx-auto max-w-6xl px-6 pb-10 text-xs text-muted">
-          Built by Jaden. Performance tracked live.
-        </footer>
+        <div className="bottom-wave-wrap">
+          <BottomWave />
+          <footer className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-10 pt-10 text-xs text-muted">
+            Built by Jaden. Performance tracked live.
+          </footer>
+        </div>
       </div>
     </div>
   );

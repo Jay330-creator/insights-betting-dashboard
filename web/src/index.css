@@ -97,13 +97,13 @@ body {
     radial-gradient(1100px 700px at 10% 20%, rgba(0, 210, 106, 0.28), transparent 64%),
     radial-gradient(1000px 720px at 90% 30%, rgba(0, 210, 106, 0.22), transparent 62%),
     radial-gradient(900px 680px at 55% 95%, rgba(0, 210, 106, 0.18), transparent 60%);
-  opacity: 0.30;
+  opacity: 0.10;
   animation: siteBgFloat1 14s ease-in-out infinite;
 }
 
 .site-bg::after {
   inset: -40vh -40vw;
-  opacity: 0.22;
+  opacity: 0.10;
   filter: blur(10px);
   background:
     repeating-linear-gradient(
@@ -128,5 +128,83 @@ body {
   .site-bg::before,
   .site-bg::after {
     animation: none;
+  }
+}
+
+@keyframes bottomWaveScrollFast {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-600px, 4px, 0);
+  }
+  100% {
+    transform: translate3d(-1200px, 0, 0);
+  }
+}
+
+@keyframes bottomWaveScrollSlow {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-600px, -3px, 0);
+  }
+  100% {
+    transform: translate3d(-1200px, 0, 0);
+  }
+}
+
+.bottom-wave-wrap {
+  position: relative;
+}
+
+.bottom-wave {
+  height: 160px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.bottom-wave__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bottom-wave__scroll {
+  will-change: transform;
+}
+
+.bottom-wave__scroll--fast {
+  animation: bottomWaveScrollFast 8s linear infinite;
+}
+
+.bottom-wave__scroll--slow {
+  animation: bottomWaveScrollSlow 10s linear infinite;
+}
+
+.bottom-wave__path {
+  stroke: #00D26A;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bottom-wave__path--front {
+  stroke-width: 3.2;
+  opacity: 0.95;
+}
+
+.bottom-wave__path--back {
+  stroke-width: 2.0;
+  opacity: 0.28;
+  filter: blur(0.4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-wave__scroll--fast,
+  .bottom-wave__scroll--slow {
+    animation: none;
+    transform: translate3d(0, 0, 0);
   }
 }
