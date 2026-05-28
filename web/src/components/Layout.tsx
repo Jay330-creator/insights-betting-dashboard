@@ -10,7 +10,8 @@ const nav = [
 
 export function Layout() {
   return (
-    <div className="min-h-screen bg-bg text-text">
+    <div className="min-h-screen text-text">
+      <div className="site-bg" aria-hidden="true" />
       <header className="sticky top-0 z-10 border-b border-border bg-bg">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div>
