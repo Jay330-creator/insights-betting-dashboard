@@ -43,32 +43,41 @@ body {
 
 @keyframes siteBgFloat1 {
   0% {
-    transform: translate3d(-2%, -2%, 0) scale(1);
+    transform: translate3d(-10%, -8%, 0) scale(1.05);
   }
   50% {
-    transform: translate3d(2%, 1%, 0) scale(1.03);
+    transform: translate3d(10%, 6%, 0) scale(1.12);
   }
   100% {
-    transform: translate3d(-1%, 2%, 0) scale(1.01);
+    transform: translate3d(-6%, 10%, 0) scale(1.08);
   }
 }
 
 @keyframes siteBgFloat2 {
   0% {
-    transform: translate3d(2%, 3%, 0) scale(1.02);
+    transform: translate3d(12%, 10%, 0) scale(1.10);
   }
   50% {
-    transform: translate3d(-1%, -2%, 0) scale(1);
+    transform: translate3d(-8%, -10%, 0) scale(1.02);
   }
   100% {
-    transform: translate3d(1%, -1%, 0) scale(1.02);
+    transform: translate3d(6%, -6%, 0) scale(1.08);
+  }
+}
+
+@keyframes siteBgFlow {
+  0% {
+    background-position: 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 160% 120%, -120% -80%;
   }
 }
 
 .site-bg {
   position: fixed;
   inset: 0;
-  z-index: -10;
+  z-index: 0;
   pointer-events: none;
   background: #0D1117;
 }
@@ -77,27 +86,42 @@ body {
 .site-bg::after {
   content: '';
   position: absolute;
-  inset: -20vh -20vw;
-  opacity: 0.10;
-  filter: blur(18px);
+  inset: -30vh -30vw;
+  filter: blur(14px);
   will-change: transform;
 }
 
 /* Abstract "data flow" feel: soft mesh blobs + faint streaking */
 .site-bg::before {
   background:
-    radial-gradient(900px 500px at 15% 20%, rgba(0, 210, 106, 0.12), transparent 62%),
-    radial-gradient(800px 520px at 85% 35%, rgba(0, 210, 106, 0.08), transparent 60%),
-    radial-gradient(700px 480px at 40% 90%, rgba(0, 210, 106, 0.06), transparent 58%);
-  animation: siteBgFloat1 22s ease-in-out infinite;
+    radial-gradient(1100px 700px at 10% 20%, rgba(0, 210, 106, 0.28), transparent 64%),
+    radial-gradient(1000px 720px at 90% 30%, rgba(0, 210, 106, 0.22), transparent 62%),
+    radial-gradient(900px 680px at 55% 95%, rgba(0, 210, 106, 0.18), transparent 60%);
+  opacity: 0.30;
+  animation: siteBgFloat1 14s ease-in-out infinite;
 }
 
 .site-bg::after {
+  inset: -40vh -40vw;
+  opacity: 0.22;
+  filter: blur(10px);
   background:
-    linear-gradient(135deg, transparent 0%, rgba(0, 210, 106, 0.06) 35%, transparent 70%),
-    radial-gradient(700px 420px at 70% 75%, rgba(0, 210, 106, 0.07), transparent 60%);
-  opacity: 0.07;
-  animation: siteBgFloat2 18s ease-in-out infinite;
+    repeating-linear-gradient(
+      125deg,
+      rgba(0, 210, 106, 0.16) 0px,
+      rgba(0, 210, 106, 0.16) 1px,
+      transparent 1px,
+      transparent 22px
+    ),
+    repeating-linear-gradient(
+      35deg,
+      rgba(0, 210, 106, 0.08) 0px,
+      rgba(0, 210, 106, 0.08) 1px,
+      transparent 1px,
+      transparent 28px
+    );
+  background-size: 1400px 1000px, 1200px 900px;
+  animation: siteBgFlow 12s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
