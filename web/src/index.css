@@ -282,7 +282,7 @@ body {
 }
 
 .hero-viz__title {
-  margin-top: 8px;
+  margin-top: 0;
   font-weight: 900;
   letter-spacing: -0.03em;
   font-size: 22px;

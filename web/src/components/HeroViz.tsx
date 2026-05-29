@@ -14,11 +14,8 @@ export function HeroViz() {
     <div className="hero-viz" role="presentation">
       <div className="hero-viz__inner">
         <div className="hero-viz__copy">
-          <div className="hero-viz__kicker">Overview</div>
           <div className="hero-viz__title">Premium analytics, at a glance</div>
-          <div className="hero-viz__sub">
-            Decorative motion panel (no real data) — built to match the sportsbook theme.
-          </div>
+          <div className="hero-viz__sub">Live performance, tracked end to end.</div>
         </div>
 
         {/* Art is in its own column so it can never overlap text */}
